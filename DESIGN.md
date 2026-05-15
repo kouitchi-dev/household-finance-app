@@ -84,7 +84,7 @@ name TEXT NOT NULL
 - repository: DB操作
 
 ### ER図
-（後で追記）
+![ER図](docs/er-diagram.png)
 
 ### 技術選定理由
 - **FastAPI** : 型安全・自動ドキュメント生成・高速。FastAPIは学習済みであること、軽量で速く、このアプリの規模だと適していることから。
