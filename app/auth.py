@@ -1,21 +1,21 @@
 
 from jose import JWTError, jwt
 from fastapi import HTTPException
-
+from dotenv import load_dotenv
+import os
 
 
 from datetime import datetime, timedelta, timezone
 
 
 
-
-SECRET_KEY = "your-secret-key"
+SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 
 
 def create_access_token(data: dict):
     to_encode = data.copy()
-    expire = datetime.now(timezone.utc) + timedelta(minute=30)
+    expire = datetime.now(timezone.utc) + timedelta(minutes=30)
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY , algorithm=ALGORITHM)
         

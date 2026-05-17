@@ -11,10 +11,10 @@ class User(Base):
     email = Column('email',String(30))
     password = Column('password',String(50))
 
-class transaction(Base):
+class Transaction(Base):
     __tablename__ = 'transaction'
     tran_id = Column('id',Integer,primary_key=True)
-    user_id = Column('user_id',String(100),ForeignKey('users.id'))
+    user_id = Column('user_id',Integer,ForeignKey('users.id'))
     income = Column('deposit',Integer)
     expense = Column('expense',Integer)
     balance = Column('balance',Integer)

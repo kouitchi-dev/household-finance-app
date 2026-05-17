@@ -3,9 +3,13 @@
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 
-engine = create_engine("postgresql://db/test.db")
+engine = create_engine(os.getenv('DATABASE_URL'))
 
 
 SessionLocal = sessionmaker(
@@ -17,3 +21,5 @@ SessionLocal = sessionmaker(
 
 
 Base = declarative_base()
+
+Base.metadata.create_all(bind=engine)
