@@ -9,7 +9,7 @@ class User(Base):
     id = Column('id',Integer,primary_key=True)
     name = Column('name',String(20))
     email = Column('email',String(30))
-    password = Column('password',String(50))
+    password = Column('password',String(100))
 
 class Transaction(Base):
     __tablename__ = 'transaction'

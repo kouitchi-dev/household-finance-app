@@ -4,8 +4,9 @@ from sqlalchemy.orm import Session
 from models import User
 from schemas import UserCreate
 
-def get_current_user(db: Session, token: str):
-    pass
+
+
+
 def create_user(db: Session, user: UserCreate):
     db_user = User(name=user.name,email=user.email,password=user.password)
     db.add(db_user)
@@ -34,6 +35,8 @@ def delete_user(db: Session, user_id: int):
 
 
 
+def get_user_by_email(db: Session,email: str):
+    return db.query(User).filter(User.email==email).first()
 
 
 
