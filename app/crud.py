@@ -2,8 +2,8 @@
 
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from models import User,Transaction
-from schemas import UserCreate,TransactionCreate,TransacionSummary
+from models import User,Transaction,Category
+from schemas import UserCreate,TransactionCreate,TransacionSummary,CategoryCreate
 
 
 
@@ -46,7 +46,6 @@ def create_transaction(db: Session, user_id: int, transaction: TransactionCreate
         type=transaction.type,
         description=transaction.description,
         category_id=transaction.category_id)
-    
     db.add(db_transaction)
     db.commit()
     db.refresh(db_transaction)
@@ -90,3 +89,30 @@ def delete_transaction(db: Session, user_id: int, transaction_id: int):
     db.delete(db_transaction)
     db.commit()
     return db_transaction
+
+# category_crud
+
+def create_category(db: Session, user_id: int, category: CategoryCreate):
+    db_category = Category(user_id=user_id,name=category.name)
+    db.add(db_category)
+    db.commit()
+    db.refresh(db_category)
+    return db_category
+
+def get_categories(db: Session, user_id: int):
+    return db.query(Category).filter(Category.user_id==user_id).all()
+
+def update_category(db: Session, user_id: int, category_id: int, category: CategoryCreate):
+    db_category = db.query(Category).filter(Category.user_id==user_id,Category.id==category_id).first()
+    db_category.name=category.name
+    db.commit()
+    db.refresh(db_category)
+    return db_category
+
+def delete_category(db: Session, user_id: int, category_id: int):
+    db_category = db.query(Category).filter(Category.user_id==user_id,Category.id==category_id).first()
+    db.delete(db_category)
+    db.commit()
+    return db_category
+
+

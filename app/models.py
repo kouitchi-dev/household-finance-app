@@ -19,11 +19,11 @@ class Transaction(Base):
     amount = Column('amount',Integer)
     description = Column('description',String(50),nullable=True)
     type = Column('type',String(10))
-    created_at = Column('create_at',DateTime)
+    created_at = Column('created_at',DateTime)
     
 
 class Category(Base):
-    __tablename__ = 'category'
+    __tablename__ = 'categories'
     id = Column('id',Integer,primary_key=True)
     user_id = Column('user_id',Integer,ForeignKey('users.id'))
     name = Column('name',String(50),nullable=False)

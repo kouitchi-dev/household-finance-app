@@ -34,7 +34,7 @@ class TransactionCreate(BaseModel):
     category_id: int | None = None
 
 
-class SummaryType(BaseModel):
+class SummaryType(str, Enum):
     monthly = 'monthly'
     weekly = 'weekly'
 
@@ -42,6 +42,7 @@ class TransacionSummary(BaseModel):
     type: SummaryType
     year: int
     month: int | None = None
-    weekly: int | None = None
     week: int | None = None
 
+class CategoryCreate(BaseModel):
+    name: str
