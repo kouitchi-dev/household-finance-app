@@ -40,7 +40,7 @@ async def create_user_endpoint(user:UserCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/users/{user_id}", response_model=UserResponse)
-async def get_user_endpoint(user_id: int, current_user = Depends(get_current_user), db: Session = Depends(get_db)):
+async def get_user_endpoint(user_id: int, db: Session = Depends(get_db), current_user = Depends(get_current_user), ):
     if current_user.id != user_id:
         raise HTTPException(status_code=403, detail="権限がありません")
     return crud.get_users(db,user_id)
