@@ -67,7 +67,7 @@
 
 ### transactionsテーブル
 - id INTEGER PRIMARY KEY
-- user_id INTEGER FOREIGN KEY('users.id')
+- user_id INTEGER FOREIGN KEY('users.id') NOT NULL
 - category_id INTEGER FOREIGN KEY('categories.id')
 - amount INTEGER NOT NULL
 - description VARCHAR(50) NULLABLE
@@ -76,7 +76,7 @@
 
 ### categoriesテーブル
 - id INTEGER PRIMARY KEY
-- user_id INTEGER FOREIGN KEY('users.id')
+- user_id INTEGER FOREIGN KEY('users.id') NOT NULL
 - name VARCHAR(50) NOT NULL
 
 
