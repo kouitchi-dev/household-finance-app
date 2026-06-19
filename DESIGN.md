@@ -60,9 +60,9 @@
 
 ### usersテーブル
 - id INTEGER PRIMARY KEY
-- name TEXT NOT NULL
-- email TEXT NOT NULL UNIQUE
-- password TEXT NOT NULL
+- name VARCHAR(20) NOT NULL
+- email VARCHAR(30) NOT NULL UNIQUE
+- password VARCHAR(100) NOT NULL
 - created_at TIMESTAMP NOT NULL
 
 ### transactionsテーブル
@@ -70,14 +70,14 @@
 - user_id INTEGER FOREIGN KEY('users.id')
 - category_id INTEGER FOREIGN KEY('categories.id')
 - amount INTEGER NOT NULL
-- description TEXT NULLABLE
+- description VARCHAR(50) NULLABLE
 - type VARCHAR(10) NOT NULL CHECK(type IN ('income', 'expense'))
 - created_at TIMESTAMP NOT NULL
 
 ### categoriesテーブル
 - id INTEGER PRIMARY KEY
 - user_id INTEGER FOREIGN KEY('users.id')
-- name TEXT NOT NULL
+- name VARCHAR(50) NOT NULL
 
 
 ## アーキテクチャ
