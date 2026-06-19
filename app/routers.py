@@ -46,7 +46,7 @@ async def get_current_user_endpoint(current_user = Depends(get_current_user)):
 async def get_user_endpoint(user_id: int, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
     if current_user.id != user_id:
         raise HTTPException(status_code=403, detail="権限がありません")
-    return crud.get_users(db,user_id)
+    return services.get_user(db,user_id)
 
 
 @router.patch("/users/{user_id}", response_model=UserResponse)
@@ -59,7 +59,7 @@ async def update_user_endpoint(user_id: int, user: UserCreate, db: Session = Dep
 async def delete_user_endpoint(user_id: int, db: Session = Depends(get_db),  current_user = Depends(get_current_user)):
     if current_user.id != user_id:
         raise HTTPException(status_code=403, detail="権限がありません")
-    crud.delete_user(db,user_id)
+    services.delete_user(db,user_id)
     return {"message":"deleted"}
 
 
@@ -81,12 +81,12 @@ async def login_user_endpoint(form_data: OAuth2PasswordRequestForm = Depends(), 
 
 @router.post("/transactions",response_model=TransactionResponse)
 async def create_transaction_endpoint(transaction: TransactionCreate, current_user = Depends(get_current_user), db: Session = Depends(get_db)):
-    return crud.create_transaction(db, current_user.id, transaction)
+    return services.create_transaction(db, current_user.id, transaction)
 
 
 @router.get("/transactions",response_model=list[TransactionResponse])
 async def get_transaction_endpoint(page: int = 1, limit: int = 20, current_user = Depends(get_current_user), db: Session = Depends(get_db)):
-    db_transaction = crud.get_transactions(db,current_user.id,page,limit)
+    db_transaction = services.get_transactions(db,current_user.id,page,limit)
 
     return db_transaction
 
@@ -103,32 +103,32 @@ async def get_transactions_summary_endpoint(
 
 @router.patch("/transactions/{transaction_id}",response_model=TransactionResponse)
 async def update_transaction_endpoint(transaction: TransactionCreate, transaction_id: int, current_user = Depends(get_current_user), db: Session = Depends(get_db)):
-    return crud.update_transaction(db,current_user.id,transaction_id,transaction)
+    return services.update_transaction(db,current_user.id,transaction_id,transaction)
 
 @router.delete("/transactions/{transaction_id}")
 async def delete_transaction_endpoint(transaction_id: int, current_user = Depends(get_current_user), db: Session = Depends(get_db)):
-    crud.delete_transaction(db, current_user.id, transaction_id)
+    services.delete_transaction(db, current_user.id, transaction_id)
     return {"message":"deleted"}
 
 #categories_endpoint
 
 @router.post("/categories",response_model=CategoryResponse)
 async def create_category_endpoint(category: CategoryCreate, current_user = Depends(get_current_user), db: Session = Depends(get_db)):
-    return crud.create_category(db,current_user.id,category)
+    return services.create_category(db,current_user.id,category)
 
 @router.get("/categories",response_model=list[CategoryResponse])
 async def get_category_endpoint(current_user = Depends(get_current_user), db: Session = Depends(get_db)):
-    return crud.get_categories(db,current_user.id)
+    return services.get_categories(db,current_user.id)
 
 
 @router.patch("/categories/{category_id}",response_model=CategoryResponse)
 async def update_category_endpoint(category_id: int, category: CategoryCreate, current_user = Depends(get_current_user), db: Session = Depends(get_db)):
-    return crud.update_category(db,current_user.id,category_id,category)
+    return services.update_category(db,current_user.id,category_id,category)
 
 
 @router.delete("/categories/{category_id}")
 async def delete_category_endpoint(category_id: int, current_user = Depends(get_current_user), db: Session = Depends(get_db)):
-    crud.delete_category(db,current_user.id,category_id)
+    services.delete_category(db,current_user.id,category_id)
     return {"message":"deleted"}
 
 
