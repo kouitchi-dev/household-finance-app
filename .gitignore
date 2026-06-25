@@ -219,4 +219,8 @@ __marimo__/
 
 # portfolio
 ToDo.md
-CLAUDE.md"app/test.db" 
+CLAUDE.md
+app/test.db
+test.db
+.claude/
+pytest
