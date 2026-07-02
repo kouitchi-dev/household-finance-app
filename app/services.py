@@ -3,9 +3,10 @@
 import crud
 import auth
 from fastapi import HTTPException
-from exceptions import EmailAlreadyExistsError
+from exceptions import EmailAlreadyExistsError, CategoryAlreadyExistsError
 from datetime import date
 import calendar
+
 
 _EMAIL_DUP = "このメールアドレスは既に使われています"
 
@@ -108,7 +109,11 @@ def delete_transaction(db, user_id, transaction_id):
 
 # ---- categories ----
 def create_category(db, user_id, category):
-    return crud.create_category(db, user_id, category)
+    try:
+        return crud.create_category(db, user_id, category)
+    except CategoryAlreadyExistsError:
+        raise HTTPException(status_code=409, detail="このカテゴリ名は既に存在します")
+
 
 def get_categories(db, user_id):
     return crud.get_categories(db, user_id)

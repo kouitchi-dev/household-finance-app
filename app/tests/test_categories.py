@@ -19,3 +19,10 @@ def test_カテゴリ削除(client, auth):
     created = client.post("/categories", json={"name": "食費"}, headers=auth["headers"]).json()
     response = client.delete(f"/categories/{created['id']}", headers=auth["headers"])
     assert response.status_code == 200
+
+
+def test_同名カテゴリは409(client, auth):
+    client.post("/categories", json={"name": "食費"}, headers=auth["headers"])
+    r = client.post("/categories", json={"name": "食費"}, headers=auth["headers"])
+    assert r.status_code == 409
+

@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from models import User,Transaction,Category
 from schemas import UserCreate,TransactionCreate,CategoryCreate
-from exceptions import EmailAlreadyExistsError
+from exceptions import EmailAlreadyExistsError, CategoryAlreadyExistsError
 from sqlalchemy import func, case
 
 
@@ -119,7 +119,11 @@ def delete_transaction(db: Session, user_id: int, transaction_id: int):
 def create_category(db: Session, user_id: int, category: CategoryCreate):
     db_category = Category(user_id=user_id,name=category.name)
     db.add(db_category)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise CategoryAlreadyExistsError()
     db.refresh(db_category)
     return db_category
 

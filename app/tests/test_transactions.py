@@ -143,3 +143,9 @@ def test_summary_取引ゼロの期間は全て0(client, auth):
     assert r.status_code == 200
     assert r.json() == {"income": 0, "expense": 0, "balance": 0}
 
+
+def test_負のamountは422(client, auth):
+    r = client.post("/transactions",
+                    json={"amount": -500, "type": "expense", "transaction_date": "2026-07-01"},
+                    headers=auth["headers"])
+    assert r.status_code == 422

@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from enum import Enum
 from datetime import datetime,date
 
@@ -23,14 +23,14 @@ class TransactionType(str, Enum):
     expense = 'expense'
 
 class TransactionCreate(BaseModel):
-    amount: int
+    amount: int = Field(ge=0)
     type: TransactionType
     transaction_date: date
     description: str | None = None
     category_id: int | None = None
 
 class TransactionUpdate(BaseModel):
-    amount: int | None = None
+    amount: int | None = Field(default=None, ge=0)
     type: TransactionType | None = None
     transaction_date: date | None = None
     description: str | None = None
