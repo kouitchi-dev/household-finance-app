@@ -28,12 +28,12 @@ def create_access_token(data: dict):
         
 def verify_token(token: str):
     try:
-        payload = jwt.decode(token,SECRET_KEY,algorithms=[ALGORITHM])
-        email = payload.get("sub")
-        if email is None:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id = payload.get("sub")         
+        if user_id is None:
             raise HTTPException(status_code=401, detail="無効なトークンです")
-
-        return email
+        return user_id
     except JWTError:
         raise HTTPException(status_code=401, detail="トークンが不正です")
+
 

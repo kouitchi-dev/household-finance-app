@@ -72,3 +72,10 @@ def test_ユーザー部分更新_nameだけ(client, auth):
     assert r.status_code == 200
     assert r.json()["name"] == "newname"
     assert r.json()["email"] == "taro@example.com"   # 送ってないので不変
+
+def test_メール変更後もトークンが有効(client, auth):
+    # email を変更
+    client.patch(f"/users/{auth['user_id']}", json={"email": "changed@example.com"}, headers=auth["headers"])
+    # 変更前に取ったトークンで /users/me → まだ使える（id基盤なので）
+    r = client.get("/users/me", headers=auth["headers"])
+    assert r.status_code == 200

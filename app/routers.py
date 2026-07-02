@@ -28,8 +28,8 @@ def get_db():
 
 
 async def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-    email = auth.verify_token(token)
-    user = crud.get_user_by_email(db,email)
+    user_id = auth.verify_token(token)
+    user = crud.get_users(db, int(user_id))
     if not user:
         raise HTTPException(status_code=401, detail="ユーザーが存在しません")
     return user

@@ -39,7 +39,8 @@ def login_user(db, username, password):
     db_user = crud.get_user_by_email(db, username)
     if not db_user or not auth.verify_password(password, db_user.password):
         raise HTTPException(status_code=401, detail="メールアドレスまたはパスワードが正しくありません")
-    return auth.create_access_token({"sub": db_user.email})
+    return auth.create_access_token({"sub": str(db_user.id)})
+
 
 
 
