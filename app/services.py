@@ -74,13 +74,21 @@ def delete_user(db, user_id):
         raise HTTPException(status_code=404, detail="ユーザーが見つかりません")
 
 # ---- transactions ----
+
+#自分のカテゴリが存在するかをチェック、カテゴリ未指定の場合はそのまま通す
+def _ensure_category_owned(db, user_id, category_id):
+    if category_id is not None and crud.get_category(db, user_id, category_id) is None:
+        raise HTTPException(status_code=404, detail="カテゴリが見つかりません")
+
 def create_transaction(db, user_id, transaction):
+    _ensure_category_owned(db, user_id, transaction.category_id)
     return crud.create_transaction(db, user_id, transaction)
 
 def get_transactions(db, user_id, page, limit):
     return crud.get_transactions(db, user_id, page, limit)
 
 def update_transaction(db, user_id, transaction_id, transaction):
+    _ensure_category_owned(db, user_id, transaction.category_id)
     updated = crud.update_transaction(db, user_id, transaction_id, transaction)
     if updated is None:
         raise HTTPException(status_code=404, detail="取引が見つかりません")

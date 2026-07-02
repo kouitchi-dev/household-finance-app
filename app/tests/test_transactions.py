@@ -51,4 +51,36 @@ def test_limit上限超過は422になる(client, auth):
 
 def test_limit下限未満は422になる(client, auth):
     response = client.get("/transactions?limit=0", headers=auth["headers"])
-    assert response.status_code == 422    
+    assert response.status_code == 422
+
+def test_他人のカテゴリは紐づけできない(client, auth):
+    # 別ユーザーB を作ってカテゴリを持たせる
+    client.post("/users", json={"name": "jiro", "email": "jiro@example.com", "password": "password123"})
+    login_b = client.post("/auth/login", data={"username": "jiro@example.com", "password": "password123"}).json()
+    headers_b = {"Authorization": f"Bearer {login_b['access_token']}"}
+    category_b = client.post("/categories", json={"name": "娯楽"}, headers=headers_b).json()
+
+    # A（auth）が B のカテゴリidで収支作成 → 404
+    response = client.post("/transactions", json={
+        "amount": 1000, "type": "expense", "transaction_date": "2026-06-15",
+        "category_id": category_b["id"]
+    }, headers=auth["headers"])
+    assert response.status_code == 404
+
+# 存在しないカテゴリidは弾く（FK違反500を防ぐ）
+def test_存在しないカテゴリは紐づけできない(client, auth):
+    response = client.post("/transactions", json={
+        "amount": 1000, "type": "expense", "transaction_date": "2026-06-15",
+        "category_id": 9999
+    }, headers=auth["headers"])
+    assert response.status_code == 404
+
+# 自分のカテゴリなら正常に紐づく（正規フローが壊れてない確認）
+def test_自分のカテゴリは紐づけできる(client, auth):
+    category = client.post("/categories", json={"name": "食費"}, headers=auth["headers"]).json()
+    response = client.post("/transactions", json={
+        "amount": 1000, "type": "expense", "transaction_date": "2026-06-15",
+        "category_id": category["id"]
+    }, headers=auth["headers"])
+    assert response.status_code == 200
+    assert response.json()["category_id"] == category["id"]

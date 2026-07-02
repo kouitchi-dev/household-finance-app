@@ -127,6 +127,9 @@ def create_category(db: Session, user_id: int, category: CategoryCreate):
     db.refresh(db_category)
     return db_category
 
+def get_category(db: Session, user_id: int, category_id: int):
+    return db.query(Category).filter(Category.user_id==user_id, Category.id==category_id).first()
+
 def get_categories(db: Session, user_id: int):
     return db.query(Category).filter(Category.user_id==user_id).all()
 
