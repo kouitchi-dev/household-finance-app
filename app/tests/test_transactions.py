@@ -117,3 +117,4 @@ def test_summary_週次_ISO年境界(client, auth):
     # 暦年に釣られた year=2023, week=52 → 拾わない
     r2 = client.get("/transactions/summary?type=weekly&year=2023&week=52", headers=auth["headers"])
     assert r2.json()["income"] == 0
+

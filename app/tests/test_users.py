@@ -54,3 +54,14 @@ def test_重複メールは登録できない(client):
         "name": "jiro", "email": "taro@example.com", "password": "password456"
     })
     assert response.status_code == 409
+
+    
+def test_ログイン失敗_存在有無でメッセージが変わらない(client):
+    # 存在有無でメッセージを変えると列挙攻撃を許すため、同一であることを保証する
+    client.post("/users", json={"name": "taro", "email": "taro@example.com", "password": "password123"})
+    # ① 存在しないメール
+    r1 = client.post("/auth/login", data={"username": "nobody@example.com", "password": "x"})
+    # ② 存在するがパスワード違い
+    r2 = client.post("/auth/login", data={"username": "taro@example.com", "password": "wrong"})
+    assert r1.status_code == r2.status_code == 401
+    assert r1.json()["detail"] == r2.json()["detail"]
