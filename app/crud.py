@@ -23,13 +23,12 @@ def create_user(db: Session, user: UserCreate):
 def get_users(db: Session, user_id: int):
     return db.query(User).filter(User.id==user_id).first()
 
-def update_user(db: Session, user:UserCreate, user_id: int):
+def update_user(db: Session, data: dict, user_id: int):
     db_user = db.query(User).filter(User.id==user_id).first()
     if not db_user:
         return None
-    db_user.name=user.name
-    db_user.email=user.email
-    db_user.password=user.password
+    for key, value in data.items():
+        setattr(db_user, key, value)                     # 送られた項目だけ上書き
     try:
         db.commit()
     except IntegrityError:
@@ -37,6 +36,7 @@ def update_user(db: Session, user:UserCreate, user_id: int):
         raise EmailAlreadyExistsError()
     db.refresh(db_user)
     return db_user
+
 
 def delete_user(db: Session, user_id: int):
     db_user = db.query(User).filter(User.id==user_id).first()

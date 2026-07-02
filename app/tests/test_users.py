@@ -65,3 +65,10 @@ def test_ログイン失敗_存在有無でメッセージが変わらない(cli
     r2 = client.post("/auth/login", data={"username": "taro@example.com", "password": "wrong"})
     assert r1.status_code == r2.status_code == 401
     assert r1.json()["detail"] == r2.json()["detail"]
+
+def test_ユーザー部分更新_nameだけ(client, auth):
+    # name だけ送る → email は元のまま
+    r = client.patch(f"/users/{auth['user_id']}", json={"name": "newname"}, headers=auth["headers"])
+    assert r.status_code == 200
+    assert r.json()["name"] == "newname"
+    assert r.json()["email"] == "taro@example.com"   # 送ってないので不変

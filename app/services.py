@@ -20,18 +20,19 @@ def create_user(db,user):
     except EmailAlreadyExistsError:
         raise HTTPException(status_code=409, detail= _EMAIL_DUP)    
 
-def update_user(db,user,user_id):
-    existing = crud.get_user_by_email(db, user.email)
-    if existing and existing.id != user_id:
-        raise HTTPException(status_code=409, detail = _EMAIL_DUP)
-    user.password = auth.hash_password(user.password)
-    try:
-        updated = crud.update_user(db, user, user_id)
-    except EmailAlreadyExistsError:
-        raise HTTPException(status_code=409, detail=_EMAIL_DUP)
+def update_user(db, user, user_id):
+    data = user.model_dump(exclude_unset=True)          # 送られたキーだけ
+    if "email" in data:                                  # email 送られた時だけ重複チェック
+        existing = crud.get_user_by_email(db, data["email"])
+        if existing and existing.id != user_id:
+            raise HTTPException(status_code=409, detail=_EMAIL_DUP)
+    if "password" in data:                               # password 送られた時だけハッシュ
+        data["password"] = auth.hash_password(data["password"])
+    updated = crud.update_user(db, data, user_id)
     if updated is None:
         raise HTTPException(status_code=404, detail="ユーザーが見つかりません")
     return updated
+
 
 
 def login_user(db, username, password):

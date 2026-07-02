@@ -4,11 +4,12 @@ from fastapi import APIRouter,Depends,HTTPException, Query
 from database import SessionLocal
 from sqlalchemy.orm import Session
 import crud
-from schemas import UserCreate,UserResponse,TransactionCreate,TransactionResponse,CategoryCreate,CategoryResponse,SummaryType
+from schemas import UserCreate,UserResponse,TransactionCreate,TransactionResponse,CategoryCreate,CategoryResponse,SummaryType,UserUpdate
 import auth
 import services
 from fastapi.security import OAuth2PasswordRequestForm,OAuth2PasswordBearer
 from fastapi import Depends
+
 
 
 
@@ -50,7 +51,7 @@ async def get_user_endpoint(user_id: int, db: Session = Depends(get_db), current
 
 
 @router.patch("/users/{user_id}", response_model=UserResponse)
-async def update_user_endpoint(user_id: int, user: UserCreate, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
+async def update_user_endpoint(user_id: int, user: UserUpdate, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
     if current_user.id != user_id:
         raise HTTPException(status_code=403, detail="権限がありません")
     return services.update_user(db,user,user_id)
